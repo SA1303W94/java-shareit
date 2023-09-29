@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.UserService;
@@ -12,22 +11,15 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
+@RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
-    private final ItemMapper mapper;
     private final UserService userService;
-
-    @Autowired
-    public ItemService(@Qualifier("ItemRepositoryImpl") ItemRepository itemRepository, ItemMapper itemMapper, UserService userService) {
-        this.itemRepository = itemRepository;
-        this.mapper = itemMapper;
-        this.userService = userService;
-    }
 
     public ItemDto create(ItemDto itemDto, Long ownerId) {
         ItemDto newItemDto = null;
         if (userService.getUserById(ownerId) != null) {
-            newItemDto = mapper.toItemDto(itemRepository.create(mapper.toItem(itemDto, ownerId)));
+            newItemDto = ItemMapper.toItemDto(itemRepository.create(ItemMapper.toItem(itemDto, ownerId)));
         }
         return newItemDto;
     }
@@ -52,7 +44,7 @@ public class ItemService {
         if (!oldItem.getOwnerId().equals(ownerId)) {
             throw new NotFoundException("User have no such item.");
         }
-        return mapper.toItemDto(itemRepository.update(mapper.toItem(itemDto, ownerId)));
+        return ItemMapper.toItemDto(itemRepository.update(ItemMapper.toItem(itemDto, ownerId)));
     }
 
     public ItemDto delete(Long itemId, Long ownerId) {
@@ -60,14 +52,14 @@ public class ItemService {
         if (!item.getOwnerId().equals(ownerId)) {
             throw new NotFoundException("User have no such item.");
         }
-        return mapper.toItemDto(itemRepository.delete(itemId));
+        return ItemMapper.toItemDto(itemRepository.delete(itemId));
     }
 
     public List<ItemDto> getItemsByOwner(Long ownerId) {
         return itemRepository
                 .getItemsByOwner(ownerId)
                 .stream()
-                .map(mapper::toItemDto)
+                .map(ItemMapper::toItemDto)
                 .collect(toList());
     }
 
@@ -78,12 +70,12 @@ public class ItemService {
         text = text.toLowerCase();
         return itemRepository.getItemsBySearchQuery(text)
                 .stream()
-                .map(mapper::toItemDto)
+                .map(ItemMapper::toItemDto)
                 .collect(toList());
     }
 
     public ItemDto getItemById(Long itemId) {
-        return mapper.toItemDto(itemRepository.getItemById(itemId));
+        return ItemMapper.toItemDto(itemRepository.getItemById(itemId));
     }
 
     public void deleteItemsByOwner(Long ownerId) {

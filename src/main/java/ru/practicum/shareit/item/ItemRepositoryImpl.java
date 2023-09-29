@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,15 +9,17 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @Repository
-@Qualifier("ItemRepositoryImpl")
+//@Qualifier("ItemRepositoryImpl")
 public class ItemRepositoryImpl implements ItemRepository {
 
-    public Map<Long, Item> items;
+    private final Map<Long, Item> items;
+    //private final Map<Long, Item> itemsByOwner;
     private Long currentId;
 
     public ItemRepositoryImpl() {
         currentId = 0L;
         items = new HashMap<>();
+       // itemsByOwner = new HashMap<>();
     }
 
     @Override
@@ -42,11 +42,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> getItemsByOwner(Long ownerId) {
-        return new ArrayList<>(items
-                .values()
+        return items.values()
                 .stream()
                 .filter(item -> item.getOwnerId().equals(ownerId))
-                .collect(toList()));
+                .collect(toList());
     }
 
     @Override
@@ -54,8 +53,8 @@ public class ItemRepositoryImpl implements ItemRepository {
         return items.values()
                 .stream()
                 .filter(Item::getAvailable)
-                .filter(item -> item.getName().toLowerCase().contains(text) ||
-                        item.getDescription().toLowerCase().contains(text))
+                .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .collect(toList());
     }
 

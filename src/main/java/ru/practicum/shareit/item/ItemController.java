@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,24 +11,23 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
     private static final String OWNER_ID_HEADER = "X-Sharer-User-Id";
+    @Autowired
     private ItemService itemService;
 
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
+//    public ItemController(ItemService itemService) {
+//        this.itemService = itemService;
+//    }
 
-    @ResponseBody
     @PostMapping
     public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a POST-request to the endpoint: '/items' to add an item by the owner with ID = {}", ownerId);
         return itemService.create(itemDto, ownerId);
     }
 
-    @ResponseBody
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a PATCH-request to the endpoint: '/items' to update item with ID = {}", itemId);

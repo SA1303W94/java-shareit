@@ -1,24 +1,20 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.user.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
-@Qualifier("UserRepositoryImpl")
 public class UserRepositoryImpl implements UserRepository {
 
-    private Map<Long, User> users;
+    private final Map<Long, User> users;
+    private final Set<String> emails; // добавлю
     private Long currentId;
 
     public UserRepositoryImpl() {
         currentId = 0L;
         users = new HashMap<>();
+        emails = new HashSet<>();
     }
 
     @Override

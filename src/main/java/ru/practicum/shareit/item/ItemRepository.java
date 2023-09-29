@@ -11,7 +11,6 @@ public interface ItemRepository {
 
     List<Item> getItemsByOwner(Long ownerId);
 
-
     List<Item> getItemsBySearchQuery(String text);
 
     Item getItemById(Long itemId);
