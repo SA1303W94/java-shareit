@@ -9,7 +9,6 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @Repository
-//@Qualifier("ItemRepositoryImpl")
 public class ItemRepositoryImpl implements ItemRepository {
 
     private final Map<Long, Item> items;

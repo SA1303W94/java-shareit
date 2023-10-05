@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.UserService;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -17,11 +16,10 @@ public class ItemService {
     private final UserService userService;
 
     public ItemDto create(ItemDto itemDto, Long ownerId) {
-        ItemDto newItemDto = null;
-        if (userService.getUserById(ownerId) != null) {
-            newItemDto = ItemMapper.toItemDto(itemRepository.create(ItemMapper.toItem(itemDto, ownerId)));
+        if (userService.getUserById(ownerId) == null) {
+            throw new NotFoundException("User with ID = " + ownerId + " not found.");
         }
-        return newItemDto;
+        return ItemMapper.toItemDto(itemRepository.create(ItemMapper.toItem(itemDto, ownerId)));
     }
 
     public ItemDto update(ItemDto itemDto, Long ownerId, Long itemId) {

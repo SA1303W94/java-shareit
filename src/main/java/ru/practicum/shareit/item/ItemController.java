@@ -2,12 +2,12 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.groups.Create;
+import ru.practicum.shareit.groups.Update;
 
-import javax.validation.Valid;
 import java.util.List;
-
 
 @Slf4j
 @RestController
@@ -15,21 +15,16 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private static final String OWNER_ID_HEADER = "X-Sharer-User-Id";
-    @Autowired
-    private ItemService itemService;
-
-//    public ItemController(ItemService itemService) {
-//        this.itemService = itemService;
-//    }
+    private final ItemService itemService;
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
+    public ItemDto create(@Validated({Create.class}) @RequestBody ItemDto itemDto, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a POST-request to the endpoint: '/items' to add an item by the owner with ID = {}", ownerId);
         return itemService.create(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
+    public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto, @PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a PATCH-request to the endpoint: '/items' to update item with ID = {}", itemId);
         return itemService.update(itemDto, ownerId, itemId);
     }
