@@ -2,14 +2,28 @@ package ru.practicum.shareit.request;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.user.User;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.LocalDate;
 
-@Builder(toBuilder = true)
+@Entity
+@Table(name = "requests")
 @Data
+@Builder
 public class ItemRequest {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "description")
     private String description;
-    private String requesterName;
-    private LocalDateTime created;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "requester_id", referencedColumnName = "id")
+    private User creator;
+
+    @Column(name = "created")
+    private LocalDate created;
+
 }
