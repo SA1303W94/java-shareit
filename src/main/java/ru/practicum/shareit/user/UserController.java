@@ -28,12 +28,6 @@ public class UserController {
         return userService.save(userDto, userId);
     }
 
-    //    @PatchMapping("/{userId}")
-//    public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto, @PathVariable Long userId) {
-//        log.info("Received a PATCH-request to the endpoint: '/users' to update user with ID = {}", userId);
-//        return userService.update(userDto, userId);
-//    }
-//
     @GetMapping("/{userId}")
     public UserDto findById(@PathVariable long userId) {
         log.info("Received a GET-request to the endpoint: '/users' to get user with ID = {}", userId);

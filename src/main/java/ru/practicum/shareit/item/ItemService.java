@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -22,16 +23,19 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final CommentRepository commentRepository;
 
-    @Transactional
     public ItemDto create(Long userId, ItemDto itemDto) {
         userService.findUserById(userId);
         Item item = ItemMapper.toItem(itemDto);
@@ -39,21 +43,6 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
-    @Transactional
-    public ItemDto findItemById(Long itemId, Long userId) {
-        ItemDto result;
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException(String.format("Item with ID = %d not found.", itemId)));
-        result = ItemMapper.toItemDto(item);
-        if (Objects.equals(item.getOwnerId(), userId)) {
-            updateBookings(result);
-        }
-        List<Comment> comments = commentRepository.findAllByItemId(result.getId());
-        result.setComments(CommentMapper.toDtoList(comments));
-        return result;
-    }
-
-    @Transactional
     public ItemDto save(ItemDto itemDto, Long itemId, Long userId) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with ID = %d not found.", itemId)));
@@ -73,19 +62,35 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
-    @Transactional
-    public List<ItemDto> findAllUsersItems(Long userId) {
-        List<ItemDto> item = itemRepository.findAllByOwnerId(userId).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
-        List<ItemDto> list = new ArrayList<>();
-        item.stream().map(this::updateBookings).forEach(i -> {
-            CommentMapper.toDtoList(commentRepository.findAllByItemId(i.getId()));
-            list.add(i);
-        });
-        return list;
+    public ItemDto findItemById(Long itemId, Long userId) {
+        ItemDto result;
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException(String.format("Item with ID = %d not found.", itemId)));
+        result = ItemMapper.toItemDto(item);
+        if (Objects.equals(item.getOwnerId(), userId)) {
+            updateBookings(result);
+        }
+        List<Comment> comments = commentRepository.findAllByItemId(result.getId());
+        result.setComments(CommentMapper.toDtoList(comments));
+        return result;
     }
 
+    public List<ItemDto> findAllUsersItems(Long userId) {
+        List<Item> res = itemRepository.findAllByOwnerId(userId);
+        List<ItemDto> items = res.stream()
+                .map(ItemMapper::toItemDto).collect(toList());
+        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(res, Sort.by(DESC, "created"))
+                .stream()
+                .collect(Collectors.groupingBy(Comment::getItem, Collectors.toList()));
+        for (ItemDto item : items) {
+            updateBookings(item);
+            List<Comment> itemComments = comments.get(ItemMapper.toItem(item));
+            if (itemComments != null) {
+                item.setComments(CommentMapper.toDtoList(itemComments));
+            }
+        }
+        return items;
+    }
 
     public ItemDto updateBookings(ItemDto itemDto) {
         LocalDateTime now = LocalDateTime.now();
@@ -107,29 +112,25 @@ public class ItemService {
         return itemDto;
     }
 
-    @Transactional
     public void deleteById(Long itemId) {
         itemRepository.deleteById(itemId);
     }
 
-    @Transactional
     public List<ItemDto> search(String text) {
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
         return itemRepository.searchAvailableItems(text).stream()
                 .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
-    @Transactional
     public Long findOwnerId(Long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with ID = %d not found.", itemId)))
                 .getOwnerId();
     }
 
-    @Transactional
     public CommentDto addComment(Long itemId, Long userId, CommentDto commentDto) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException(String.format("Item with ID = %d not found.", itemId)));
