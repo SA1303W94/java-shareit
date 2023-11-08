@@ -68,7 +68,7 @@ public class ItemService {
                 .orElseThrow(() -> new NotFoundException(String.format("Item with ID = %d not found.", itemId)));
         result = ItemMapper.toItemDto(item);
         if (Objects.equals(item.getOwnerId(), userId)) {
-            updateBookings(result);
+            result = updateBookings(result);
         }
         List<Comment> comments = commentRepository.findAllByItemId(result.getId());
         result.setComments(CommentMapper.toDtoList(comments));
@@ -76,20 +76,43 @@ public class ItemService {
     }
 
     public List<ItemDto> findAllUsersItems(Long userId) {
-        List<Item> res = itemRepository.findAllByOwnerId(userId);
-        List<ItemDto> items = res.stream()
-                .map(ItemMapper::toItemDto).collect(toList());
-        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(res, Sort.by(DESC, "created"))
+        List<Item> items = itemRepository.findAllByOwnerId(userId);
+        return updateBookingsAndComments(items);
+    }
+
+    public List<ItemDto> updateBookingsAndComments(List<Item> items) {
+        Map<Item, List<Comment>> comments = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
                 .stream()
                 .collect(Collectors.groupingBy(Comment::getItem, Collectors.toList()));
-        for (ItemDto item : items) {
-            updateBookings(item);
-            List<Comment> itemComments = comments.get(ItemMapper.toItem(item));
+        Map<Item, List<Booking>> bookings = bookingRepository.findByItemIn(items, Sort.by("start"))
+                .stream()
+                .collect(Collectors.groupingBy(Booking::getItem, Collectors.toList()));
+
+        LocalDateTime now = LocalDateTime.now();
+        for (Item item : items) {
+            List<Comment> itemComments = comments.get(item);
             if (itemComments != null) {
                 item.setComments(CommentMapper.toDtoList(itemComments));
             }
+            List<Booking> itemBookings = bookings.get(item);
+            if (itemBookings != null) {
+                Booking lastBooking = itemBookings.stream()
+                        .filter(booking -> booking.getStart().isBefore(now))
+                        .max(Comparator.comparing(Booking::getStart))
+                        .orElse(null);
+                Booking nextBooking = itemBookings.stream()
+                        .filter(booking -> booking.getStart().isAfter(now))
+                        .min(Comparator.comparing(Booking::getStart))
+                        .orElse(null);
+                if (lastBooking != null) {
+                    item.setLastBooking(BookingMapper.toItemBookingDto(lastBooking));
+                }
+                if (nextBooking != null) {
+                    item.setNextBooking(BookingMapper.toItemBookingDto(nextBooking));
+                }
+            }
         }
-        return items;
+        return items.stream().map(ItemMapper::toItemDtoLong).collect(toList());
     }
 
     public ItemDto updateBookings(ItemDto itemDto) {

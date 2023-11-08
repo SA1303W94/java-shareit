@@ -27,9 +27,7 @@ public class ItemDto {
 
     @NotNull(groups = {Create.class})
     private Boolean available;
-    @NotNull(groups = {Short.class})
     private BookingDto lastBooking;
-    @NotNull(groups = {Short.class})
     private BookingDto nextBooking;
     private List<CommentDto> comments;
 }

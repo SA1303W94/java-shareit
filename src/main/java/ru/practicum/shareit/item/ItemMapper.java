@@ -13,6 +13,18 @@ public class ItemMapper {
                 .build();
     }
 
+    public static ItemDto toItemDtoLong(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .nextBooking(item.getNextBooking())
+                .lastBooking(item.getLastBooking())
+                .comments(item.getComments())
+                .build();
+    }
+
     public static Item toItem(ItemDto itemDto) {
         return Item.builder()
                 .id(itemDto.getId())

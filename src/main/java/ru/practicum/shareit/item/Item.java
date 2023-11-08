@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.*;
-import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingDto;
 import ru.practicum.shareit.item.comment.CommentDto;
 
 import javax.persistence.*;
@@ -30,10 +30,10 @@ public class Item {
     private Long ownerId;
 
     @Transient
-    private Booking lastBooking;
+    private BookingDto lastBooking;
 
     @Transient
-    private Booking nextBooking;
+    private BookingDto nextBooking;
 
     @Transient
     private List<CommentDto> comments;
