@@ -23,26 +23,26 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update(@Validated({Update.class}) @RequestBody UserDto userDto, @PathVariable Long userId) {
+    public UserDto save(@Validated({Update.class}) @RequestBody UserDto userDto, @PathVariable long userId) {
         log.info("Received a PATCH-request to the endpoint: '/users' to update user with ID = {}", userId);
-        return userService.update(userDto, userId);
-    }
-
-    @DeleteMapping("/{userId}")
-    public UserDto delete(@PathVariable Long userId) {
-        log.info("Received a DELETE-request to the endpoint: '/users' to delete user with ID = {}", userId);
-        return userService.delete(userId);
-    }
-
-    @GetMapping
-    public List<UserDto> getUsers() {
-        log.info("Received a GET-request to the endpoint: '/users' to get all users");
-        return userService.getUsers();
+        return userService.save(userDto, userId);
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable Long userId) {
+    public UserDto findById(@PathVariable long userId) {
         log.info("Received a GET-request to the endpoint: '/users' to get user with ID = {}", userId);
-        return userService.getUserById(userId);
+        return userService.findUserById(userId);
+    }
+
+    @GetMapping
+    public List<UserDto> findAll() {
+        log.info("Received a GET-request to the endpoint: '/users' to get all users");
+        return userService.findAllUsers();
+    }
+
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable long userId) {
+        log.info("Received a DELETE-request to the endpoint: '/users' to delete user with ID = {}", userId);
+        userService.delete(userId);
     }
 }

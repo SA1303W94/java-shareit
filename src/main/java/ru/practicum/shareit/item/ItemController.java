@@ -6,7 +6,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.groups.Create;
 import ru.practicum.shareit.groups.Update;
+import ru.practicum.shareit.item.comment.CommentDto;
 
+import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -20,36 +23,44 @@ public class ItemController {
     @PostMapping
     public ItemDto create(@Validated({Create.class}) @RequestBody ItemDto itemDto, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a POST-request to the endpoint: '/items' to add an item by the owner with ID = {}", ownerId);
-        return itemService.create(itemDto, ownerId);
+        return itemService.create(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@Validated({Update.class}) @RequestBody ItemDto itemDto, @PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
+    public ItemDto save(@Validated({Update.class}) @RequestBody ItemDto itemDto, @PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a PATCH-request to the endpoint: '/items' to update item with ID = {}", itemId);
-        return itemService.update(itemDto, ownerId, itemId);
-    }
-
-    @DeleteMapping("/{itemId}")
-    public ItemDto delete(@PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
-        log.info("Received a DELETE-request to the endpoint: '/items' to delete item with ID = {}", itemId);
-        return itemService.delete(itemId, ownerId);
-    }
-
-    @GetMapping
-    public List<ItemDto> getItemsByOwner(@RequestHeader(OWNER_ID_HEADER) Long ownerId) {
-        log.info("Received a GET-request to the endpoint: '/items' to get all items of owner with ID = {}", ownerId);
-        return itemService.getItemsByOwner(ownerId);
-    }
-
-    @GetMapping("/search")
-    public List<ItemDto> getItemsBySearchQuery(@RequestParam String text) {
-        log.info("Received a GET-request to the endpoint: '/items/search' to search item with text = {}", text);
-        return itemService.getItemsBySearchQuery(text);
+        return itemService.save(itemDto, itemId, ownerId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable Long itemId) {
+    public ItemDto findById(@RequestHeader(OWNER_ID_HEADER) Long userId, @PathVariable Long itemId) {
         log.info("Received a GET-request to the endpoint: '/items' to get an item with ID = {}", itemId);
-        return itemService.getItemById(itemId);
+        return itemService.findItemById(itemId, userId);
+    }
+
+    @GetMapping
+    public List<ItemDto> findAll(@RequestHeader(OWNER_ID_HEADER) Long userId) {
+        log.info("Received a GET-request to the endpoint: '/items' to get all items of owner with ID = {}", userId);
+        return itemService.findAllUsersItems(userId);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void delete(@PathVariable Long itemId, @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
+        log.info("Received a DELETE-request to the endpoint: '/items' to delete item with ID = {}", itemId);
+        itemService.deleteById(itemId);
+    }
+
+    @GetMapping("/search")
+    public Collection<ItemDto> search(@RequestParam String text) {
+        log.info("Received a GET-request to the endpoint: '/items/search' to search item with text = {}", text);
+        return itemService.search(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@RequestHeader(OWNER_ID_HEADER) Long userId,
+                                    @PathVariable Long itemId,
+                                    @Valid @RequestBody CommentDto commentDto) {
+        log.info("Received a POST-request to the endpoint: '/items/{itemId}/comment' to add a comment");
+        return itemService.addComment(itemId, userId, commentDto);
     }
 }

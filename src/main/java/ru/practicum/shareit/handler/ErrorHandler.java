@@ -8,9 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.AlreadyExistsException;
-import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.*;
 
 import javax.validation.ConstraintViolationException;
 
@@ -24,6 +22,14 @@ public class ErrorHandler {
         log.warn("404 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNotAvailableException(NotAvailableException e) {
+        log.warn("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -58,6 +64,20 @@ public class ErrorHandler {
     public ErrorResponse handleThrowable(final Throwable throwable) {
         log.error("Unknown error", throwable);
         return new ErrorResponse(throwable.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUnknownDataException(TimeDataException e) {
+        log.warn("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleOperationAccessException(final OperationAccessException e) {
+        log.warn("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
     }
 
     @RequiredArgsConstructor
