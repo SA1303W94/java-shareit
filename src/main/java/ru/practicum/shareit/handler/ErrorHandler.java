@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exception.*;
 
 import javax.validation.ConstraintViolationException;
-import java.lang.IllegalArgumentException;
 
 @Slf4j
 @RestControllerAdvice
@@ -38,14 +37,6 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(final ValidationException e) {
-        log.error("400 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnknownDataException(MethodArgumentNotValidException e) {
@@ -60,19 +51,6 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
-        log.warn("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleAlreadyExistException(final AlreadyExistsException e) {
-        log.error("400 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -90,7 +68,7 @@ public class ErrorHandler {
 
     @RequiredArgsConstructor
     @Getter
-    private static class ErrorResponse {
+    public static class ErrorResponse {
         private final String error;
     }
 }

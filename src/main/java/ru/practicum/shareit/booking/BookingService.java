@@ -65,7 +65,7 @@ public class BookingService {
         }
     }
 
-    public List<BookingDto> findAllBookingsByUser(State state, Long userId,  int from, int size) {
+    public List<BookingDto> findAllBookingsByUser(State state, Long userId, int from, int size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID = %d not found.", userId)));
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
