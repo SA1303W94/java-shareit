@@ -1,10 +1,13 @@
 package ru.practicum.shareit.request;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "requests")
@@ -19,13 +22,15 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "requester_id", referencedColumnName = "id")
-    private User creator;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requester_id")
+    private User requester;
 
-    @Column(name = "created")
-    private LocalDate created;
+    @CreationTimestamp
+    private LocalDateTime created;
 
+    @Transient
+    private List<Item> items;
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exception.*;
 
 import javax.validation.ConstraintViolationException;
+import java.lang.IllegalArgumentException;
 
 @Slf4j
 @RestControllerAdvice
@@ -20,6 +21,13 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.warn("404 {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleOperationAccessException(final OperationAccessException e) {
+        log.warn("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
@@ -39,31 +47,10 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleAlreadyExistException(final AlreadyExistsException e) {
-        log.error("400 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
-        log.warn("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnknownDataException(MethodArgumentNotValidException e) {
         log.warn("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final Throwable throwable) {
-        log.error("Unknown error", throwable);
-        return new ErrorResponse(throwable.getMessage());
     }
 
     @ExceptionHandler
@@ -74,10 +61,31 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleOperationAccessException(final OperationAccessException e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
         log.warn("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAlreadyExistException(final AlreadyExistsException e) {
+        log.error("400 {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
+        log.warn("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleThrowable(final Throwable throwable) {
+        log.error("Unknown error", throwable);
+        return new ErrorResponse(throwable.getMessage());
     }
 
     @RequiredArgsConstructor
