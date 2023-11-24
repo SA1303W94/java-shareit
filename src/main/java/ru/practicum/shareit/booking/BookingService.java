@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import ru.practicum.shareit.exception.TimeDataException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemService;
+import ru.practicum.shareit.page.CustomPageRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
@@ -69,7 +69,7 @@ public class BookingService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID = %d not found.", userId)));
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
-        Pageable page = PageRequest.of(from / size, size, sort);
+        Pageable page = new CustomPageRequest(from, size, sort);
         LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case ALL:
@@ -98,7 +98,8 @@ public class BookingService {
     public List<BookingDto> findAllBookingsByOwner(State state, Long ownerId, int from, int size) {
         userRepository.findById(ownerId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID = %d not found.", ownerId)));
-        Pageable page = PageRequest.of(from / size, size);
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+        Pageable page = new CustomPageRequest(from, size, sort);
         LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case ALL:

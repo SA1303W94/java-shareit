@@ -16,45 +16,17 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({NotFoundException.class, OperationAccessException.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundException(final NotFoundException e) {
+    public ErrorResponse handleNotFoundException(final RuntimeException e) {
         log.warn("404 {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleOperationAccessException(final OperationAccessException e) {
-        log.warn("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
+    @ExceptionHandler({NotAvailableException.class, MethodArgumentNotValidException.class, TimeDataException.class,
+            ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleNotAvailableException(NotAvailableException e) {
-        log.warn("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUnknownDataException(MethodArgumentNotValidException e) {
-        log.warn("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUnknownDataException(TimeDataException e) {
-        log.warn("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
-
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
+    public ErrorResponse handleBadRequestException(RuntimeException e) {
         log.warn("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }

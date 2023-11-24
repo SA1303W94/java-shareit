@@ -4,7 +4,7 @@ import lombok.*;
 import ru.practicum.shareit.booking.BookingDto;
 import ru.practicum.shareit.groups.Create;
 import ru.practicum.shareit.item.comment.CommentDto;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,5 +33,5 @@ public class ItemDto {
     private BookingDto nextBooking;
     private List<CommentDto> comments;
     private Long requestId;
-    private ItemRequest itemRequest;
+    private ItemRequestDto itemRequestDto;
 }

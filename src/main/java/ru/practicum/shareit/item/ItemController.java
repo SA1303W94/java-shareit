@@ -17,6 +17,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/items")
 public class ItemController {
     private static final String OWNER_ID_HEADER = "X-Sharer-User-Id";

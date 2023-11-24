@@ -34,43 +34,37 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                            BookingStatus status, Pageable page);
 
     @Query("SELECT b FROM Booking b " + "INNER JOIN Item i ON b.item.id = i.id "
-            + "WHERE i.ownerId = :ownerId "
-            + "ORDER BY b.start DESC")
+            + "WHERE i.ownerId = :ownerId ")
     List<Booking> findByItemOwnerId(@Param("ownerId") Long ownerId, Pageable page);
 
     @Query("SELECT b FROM Booking b "
             + "INNER JOIN Item i ON b.item.id = i.id "
             + "WHERE i.ownerId = :ownerId "
-            + "AND :time between b.start AND b.end "
-            + "ORDER BY b.start DESC")
+            + "AND :time between b.start AND b.end ")
     List<Booking> findCurrentBookingsOwner(@Param("ownerId") Long ownerId, LocalDateTime time, Pageable page);
 
     @Query("SELECT b FROM Booking b "
             + "INNER JOIN Item i ON b.item.id = i.id "
             + "WHERE i.ownerId = :ownerId "
-            + "AND b.end < :time "
-            + "ORDER BY b.start DESC")
+            + "AND b.end < :time ")
     List<Booking> findPastBookingsOwner(@Param("ownerId") Long ownerId, LocalDateTime time, Pageable page);
 
     @Query("SELECT b FROM Booking b "
             + "INNER JOIN Item i ON b.item.id = i.id "
             + "WHERE i.ownerId = :ownerId "
-            + "AND b.start > :time "
-            + "ORDER BY b.start DESC")
+            + "AND b.start > :time ")
     List<Booking> findFutureBookingsOwner(@Param("ownerId") Long ownerId, LocalDateTime time, Pageable page);
 
     @Query("SELECT b FROM Booking b "
             + "INNER JOIN Item i ON b.item.id = i.id "
             + "WHERE i.ownerId = :ownerId "
-            + "AND b.start > :time AND b.status = :status "
-            + "ORDER BY b.start DESC")
+            + "AND b.start > :time AND b.status = :status ")
     List<Booking> findWaitingBookingsOwner(@Param("ownerId") Long ownerId, LocalDateTime time, BookingStatus status, Pageable page);
 
     @Query("SELECT b FROM Booking b "
             + "INNER JOIN Item i ON b.item.id = i.id "
             + "WHERE i.ownerId = :ownerId "
-            + "AND b.status = :status "
-            + "ORDER BY b.start DESC")
+            + "AND b.status = :status ")
     List<Booking> findRejectedBookingsOwner(@Param("ownerId") Long ownerId, BookingStatus status, Pageable page);
 
     @Query("SELECT b FROM Booking b "

@@ -29,13 +29,13 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
-    BookingDto bookingDto;
-    Item item;
-    Booking booking;
-    UserDto bookerDto;
-    User booker;
-    UserDto userDto;
-    User user;
+    private BookingDto bookingDto;
+    private Item item;
+    private Booking booking;
+    private UserDto bookerDto;
+    private User booker;
+    private UserDto userDto;
+    private User user;
     @InjectMocks
     private BookingService bookingService;
     @Mock
@@ -140,6 +140,7 @@ public class BookingServiceTest {
         when(bookingRepository.findByBookerId(eq(userId), any())).thenReturn(bookings);
         List<BookingDto> result = bookingService.findAllBookingsByUser(State.ALL, userId, from, size);
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -155,6 +156,7 @@ public class BookingServiceTest {
 
         List<BookingDto> result = bookingService.findAllBookingsByUser(State.CURRENT, userId, from, size);
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -171,6 +173,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByUser(State.PAST, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -187,6 +190,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByUser(State.FUTURE, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -203,6 +207,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByUser(State.WAITING, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -219,6 +224,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByUser(State.REJECTED, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -267,6 +273,7 @@ public class BookingServiceTest {
         when(bookingRepository.findByItemOwnerId(anyLong(), any())).thenReturn(bookings);
         List<BookingDto> result = bookingService.findAllBookingsByOwner(state, ownerId, from, size);
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -282,6 +289,7 @@ public class BookingServiceTest {
 
         List<BookingDto> result = bookingService.findAllBookingsByOwner(State.CURRENT, userId, from, size);
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -298,6 +306,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByOwner(State.PAST, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -314,6 +323,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByOwner(State.FUTURE, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -330,6 +340,7 @@ public class BookingServiceTest {
         List<BookingDto> result = bookingService.findAllBookingsByOwner(State.WAITING, userId, from, size);
 
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
     }
 
     @Test
@@ -345,6 +356,8 @@ public class BookingServiceTest {
 
         List<BookingDto> result = bookingService.findAllBookingsByOwner(State.REJECTED, userId, from, size);
         assertEquals(expectedBookingDtoList.size(), result.size());
+        assertEquals(expectedBookingDtoList.get(0).getId(), result.get(0).getId());
+        assertEquals(expectedBookingDtoList.get(0).getStatus(), result.get(0).getStatus());
     }
 
     @Test

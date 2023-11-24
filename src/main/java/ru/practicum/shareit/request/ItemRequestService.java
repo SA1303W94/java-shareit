@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -9,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.page.CustomPageRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
@@ -23,12 +23,12 @@ import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class ItemRequestService {
     private final ItemRequestRepository requestRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public ItemRequestDto create(ItemRequestDto itemRequestDto, Long userId) {
         User user = checkUser(userId);
         ItemRequest itemRequest = ItemRequest.builder()
@@ -43,7 +43,6 @@ public class ItemRequestService {
         return res;
     }
 
-    @Transactional
     public ItemRequestDto findById(Long userId, Long requestId) {
         UserDto user = UserMapper.toUserDto(checkUser(userId));
         ItemRequest itemRequest = requestRepository.findById(requestId)
@@ -54,11 +53,10 @@ public class ItemRequestService {
         return itemRequestDto;
     }
 
-    @Transactional
     public List<ItemRequestDto> findRequests(Long userId, int from, int size) {
         checkUser(userId);
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
-        Pageable page = PageRequest.of(from / size, size, sort);
+        Pageable page = new CustomPageRequest(from, size, sort);
         List<ItemRequest> allItemRequest = requestRepository.findByRequesterIdIsNot(userId, page);
         Map<ItemRequest, List<Item>> items = itemRepository.findAllByItemRequestIn(allItemRequest)
                 .stream()
@@ -70,7 +68,6 @@ public class ItemRequestService {
         return allItemRequest.stream().map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());
     }
 
-    @Transactional
     public List<ItemRequestDto> findUserRequests(Long userId) {
         checkUser(userId);
         List<ItemRequest> allItemRequest = requestRepository.findByRequesterIdOrderByCreatedDesc(userId);
