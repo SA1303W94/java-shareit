@@ -43,6 +43,7 @@ public class ItemRequestService {
         return res;
     }
 
+    @Transactional(readOnly = true)
     public ItemRequestDto findById(Long userId, Long requestId) {
         UserDto user = UserMapper.toUserDto(checkUser(userId));
         ItemRequest itemRequest = requestRepository.findById(requestId)
@@ -53,6 +54,7 @@ public class ItemRequestService {
         return itemRequestDto;
     }
 
+    @Transactional(readOnly = true)
     public List<ItemRequestDto> findRequests(Long userId, int from, int size) {
         checkUser(userId);
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
@@ -68,6 +70,7 @@ public class ItemRequestService {
         return allItemRequest.stream().map(ItemRequestMapper::toItemRequestDto).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ItemRequestDto> findUserRequests(Long userId) {
         checkUser(userId);
         List<ItemRequest> allItemRequest = requestRepository.findByRequesterIdOrderByCreatedDesc(userId);

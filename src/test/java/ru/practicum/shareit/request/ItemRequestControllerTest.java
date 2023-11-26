@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class ItemRequestControllerTest {
 
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @InjectMocks
     private ItemRequestController requestController;
     @Mock
