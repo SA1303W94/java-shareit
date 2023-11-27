@@ -1,4 +1,4 @@
 package ru.practicum.shareit.groups;
 
-public class Short {
+public interface Short {
 }

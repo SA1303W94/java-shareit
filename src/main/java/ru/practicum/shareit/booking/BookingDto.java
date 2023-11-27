@@ -1,8 +1,6 @@
 package ru.practicum.shareit.booking;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.groups.Inpute;
 import ru.practicum.shareit.groups.Output;
 import ru.practicum.shareit.item.ItemDto;
@@ -13,9 +11,11 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Builder(toBuilder = true)
-@Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class BookingDto {
     @NotNull(groups = {Output.class})
     private Long id;
