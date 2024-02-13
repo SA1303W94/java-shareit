@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.*;
 import ru.practicum.shareit.booking.BookingDto;
-import ru.practicum.shareit.groups.Create;
 import ru.practicum.shareit.item.comment.CommentDto;
 import ru.practicum.shareit.request.ItemRequestDto;
 

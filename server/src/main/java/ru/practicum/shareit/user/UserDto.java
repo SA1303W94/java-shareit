@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import lombok.*;
-import ru.practicum.shareit.groups.Create;
 
 @Builder
 @Getter

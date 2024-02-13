@@ -46,8 +46,8 @@ public class ItemClient extends BaseClient {
         return get("?from={from}&size={size}", ownerId, parameters);
     }
 
-    public void deleteItem(long itemId) {
-        delete("/" + itemId);
+    public ResponseEntity<Object> deleteItem(long itemId) {
+        return delete("/" + itemId);
     }
 
     public ResponseEntity<Object> searchItems(Long userId, String text, Integer from, Integer size) {

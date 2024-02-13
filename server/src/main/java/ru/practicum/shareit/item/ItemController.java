@@ -3,8 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.groups.Create;
-import ru.practicum.shareit.groups.Update;
 import ru.practicum.shareit.item.comment.CommentDto;
 
 import java.util.Collection;

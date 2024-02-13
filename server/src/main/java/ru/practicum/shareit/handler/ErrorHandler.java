@@ -23,7 +23,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler({NotAvailableException.class, MethodArgumentNotValidException.class, TimeDataException.class})
-   //         ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequestException(RuntimeException e) {
         log.warn("400 {}", e.getMessage());

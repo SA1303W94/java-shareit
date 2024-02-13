@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.groups.Create;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Validated
 @RequestMapping("/items")
@@ -53,10 +54,10 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public void delete(@PathVariable Long itemId,
+    public ResponseEntity<Object> delete(@PathVariable Long itemId,
                        @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a DELETE-request to the endpoint: '/items' to delete item with ID = {}", itemId);
-        itemClient.deleteItem(itemId);
+        return itemClient.deleteItem(itemId);
     }
 
     @GetMapping("/search")
