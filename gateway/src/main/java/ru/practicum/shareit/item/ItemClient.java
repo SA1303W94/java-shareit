@@ -6,6 +6,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.comment.CommentDto;
@@ -46,8 +47,9 @@ public class ItemClient extends BaseClient {
         return get("?from={from}&size={size}", ownerId, parameters);
     }
 
-    public ResponseEntity<Object> deleteItem(long itemId) {
-        return delete("/" + itemId);
+    @ResponseBody
+    public void deleteItem(long itemId) {
+        delete("/" + itemId);
     }
 
     public ResponseEntity<Object> searchItems(Long userId, String text, Integer from, Integer size) {

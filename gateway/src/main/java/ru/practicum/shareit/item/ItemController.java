@@ -54,10 +54,10 @@ public class ItemController {
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Object> delete(@PathVariable Long itemId,
+    public void delete(@PathVariable Long itemId,
                        @RequestHeader(OWNER_ID_HEADER) Long ownerId) {
         log.info("Received a DELETE-request to the endpoint: '/items' to delete item with ID = {}", itemId);
-        return itemClient.deleteItem(itemId);
+         itemClient.deleteItem(itemId);
     }
 
     @GetMapping("/search")
