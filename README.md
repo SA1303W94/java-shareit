@@ -496,8 +496,3 @@ Maven-командой. Реализовать подобный механизм
 #### Commit 4:  
 feat:  
 -добавлен Docker.  
--переработан класс gateway/ItemController;  
--переработан класс gateway/ItemRequestDto;  
--переработан класс gateway/ItemRequestController;  
--переработан класс gateway/UserDto;  
--переработан класс gateway/UserController.
